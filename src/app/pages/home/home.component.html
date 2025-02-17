@@ -1,0 +1,7 @@
+<app-list>
+  @for (item of tasks$$(); track $index) {
+    <app-list-item>
+      {{ item | json }}
+    </app-list-item>
+  }
+</app-list>

@@ -1,0 +1,60 @@
+{
+  "tasks": [
+    {
+      "title": "Design Homepage",
+      "description": "Create wireframes and mockups for the homepage layout.",
+      "deadline": "2023-11-15",
+      "priority": "high",
+      "status": "in progress",
+      "assignedTo" : "Jacob Foster"
+    },
+    {
+      "title": "Write API Documentation",
+      "description": "Document the endpoints and usage of the REST API.",
+      "deadline": "2023-11-20",
+      "priority": "medium",
+      "status": "open",
+      "assignedTo" : "Liam Carter"
+    },
+    {
+      "title": "Fix Login Bug",
+      "description": "Resolve the issue where users cannot log in on mobile devices.",
+      "deadline": "2023-11-10",
+      "priority": "high",
+      "status": "completed",
+      "assignedTo" : "Sophia Reynolds"
+    },
+    {
+      "title": "Plan Team Meeting",
+      "description": "Schedule and prepare the agenda for the next team meeting.",
+      "deadline": "2023-11-12",
+      "priority": "low",
+      "status": "postponed",
+      "assignedTo" : "Daniel Hayes"
+    },
+    {
+      "title": "Update Dependencies",
+      "description": "Upgrade all project dependencies to their latest versions.",
+      "deadline": "2023-11-18",
+      "priority": "medium",
+      "status": "open",
+      "assignedTo" : "Ava Mitchell"
+    },
+    {
+      "title": "Test Payment Gateway",
+      "description": "Perform end-to-end testing of the new payment gateway integration.",
+      "deadline": "2023-11-25",
+      "priority": "high",
+      "status": "in progress",
+      "assignedTo" : "Ethan Brooks"
+    },
+    {
+      "title": "Write Blog Post",
+      "description": "Draft a blog post about the latest project updates.",
+      "deadline": "2023-11-30",
+      "priority": "low",
+      "status": "open",
+      "assignedTo" : "Olivia Bennett"
+    }
+  ]
+}
