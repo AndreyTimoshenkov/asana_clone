@@ -7,5 +7,4 @@ import { Component } from '@angular/core';
   styleUrl: './header.component.less'
 })
 export class HeaderComponent {
-
 }

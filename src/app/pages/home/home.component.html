@@ -1,4 +1,9 @@
-<!--<button mat-raised-button (click)="addNewTask()">Open dialog slowly</button>-->
+<div class="controls">
+    <button mat-raised-button (click)="openCreateTaskDialog()">
+        <mat-icon>add</mat-icon>
+        Create new task
+    </button>
+</div>
 
 <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
   <ng-container matColumnDef="title">
