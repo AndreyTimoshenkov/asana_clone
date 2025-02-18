@@ -1,0 +1,20 @@
+@asana-main-text: #4A4A4A;
+
+:host {
+  .mat-mdc-table {
+    background: transparent;
+
+    .mat-mdc-header-row {
+      color: @asana-main-text;
+
+      ::ng-deep .mat-sort-header-arrow {
+        color: @asana-main-text;
+        opacity: 1;
+      }
+    }
+
+    .mat-mdc-row {
+      color: @asana-main-text;
+    }
+  }
+}

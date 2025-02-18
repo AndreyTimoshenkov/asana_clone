@@ -6,7 +6,7 @@
       "deadline": "2023-11-15",
       "priority": "high",
       "status": "in progress",
-      "assignedTo" : "Jacob Foster"
+      "assignee" : "Jacob Foster"
     },
     {
       "title": "Write API Documentation",
@@ -14,7 +14,7 @@
       "deadline": "2023-11-20",
       "priority": "medium",
       "status": "open",
-      "assignedTo" : "Liam Carter"
+      "assignee" : "Liam Carter"
     },
     {
       "title": "Fix Login Bug",
@@ -22,7 +22,7 @@
       "deadline": "2023-11-10",
       "priority": "high",
       "status": "completed",
-      "assignedTo" : "Sophia Reynolds"
+      "assignee" : "Sophia Reynolds"
     },
     {
       "title": "Plan Team Meeting",
@@ -30,7 +30,7 @@
       "deadline": "2023-11-12",
       "priority": "low",
       "status": "postponed",
-      "assignedTo" : "Daniel Hayes"
+      "assignee" : "Daniel Hayes"
     },
     {
       "title": "Update Dependencies",
@@ -38,7 +38,7 @@
       "deadline": "2023-11-18",
       "priority": "medium",
       "status": "open",
-      "assignedTo" : "Ava Mitchell"
+      "assignee" : "Ava Mitchell"
     },
     {
       "title": "Test Payment Gateway",
@@ -46,7 +46,7 @@
       "deadline": "2023-11-25",
       "priority": "high",
       "status": "in progress",
-      "assignedTo" : "Ethan Brooks"
+      "assignee" : "Ethan Brooks"
     },
     {
       "title": "Write Blog Post",
@@ -54,7 +54,7 @@
       "deadline": "2023-11-30",
       "priority": "low",
       "status": "open",
-      "assignedTo" : "Olivia Bennett"
+      "assignee" : "Olivia Bennett"
     }
   ]
 }
