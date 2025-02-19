@@ -1,13 +1,13 @@
 <div class="controls">
 
-  <mat-form-field>
-    <mat-label>Filter</mat-label>
-    <input matInput (keyup)="applyFilter($event)" placeholder="Start typing to filter the tasks">
-  </mat-form-field>
-
   <button mat-raised-button (click)="openCreateTaskDialog()">
     <mat-icon>add</mat-icon>
     Create new task
+  </button>
+
+  <button mat-raised-button (click)="openFiltersDialog()">
+    <mat-icon>filter_list</mat-icon>
+    Select filters
   </button>
 
 </div>

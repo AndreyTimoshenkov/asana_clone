@@ -1,10 +1,8 @@
 import { AfterViewInit, Component, DestroyRef, inject, OnInit, ViewChild } from '@angular/core';
 import {
-  MatCell,
-  MatCellDef,
+  MatCell, MatCellDef,
   MatColumnDef,
-  MatHeaderCell,
-  MatHeaderCellDef,
+  MatHeaderCell, MatHeaderCellDef,
   MatHeaderRow, MatHeaderRowDef, MatRow, MatRowDef,
   MatTable, MatTableDataSource
 } from "@angular/material/table";
@@ -13,11 +11,11 @@ import { MatButton } from "@angular/material/button";
 import { CreateTaskComponent } from '../../components/create-task/create-task.component';
 import {MatDialog} from "@angular/material/dialog";
 import {MatIconModule} from "@angular/material/icon";
-import { MatFormField, MatFormFieldModule } from "@angular/material/form-field";
-import { MatInput } from "@angular/material/input";
+import { MatFormFieldModule } from "@angular/material/form-field";
 import { select, Store } from "@ngrx/store";
 import { ITask, TaskState } from '../../state/task/task.model';
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { FilterComponent } from "../../components/filter/filter.component";
 
 @Component({
   selector: 'app-home',
@@ -26,19 +24,17 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
     MatSort,
     MatColumnDef,
     MatHeaderCell,
-    MatHeaderCellDef,
     MatSortHeader,
     MatCell,
-    MatCellDef,
     MatHeaderRow,
-    MatHeaderRowDef,
     MatRow,
-    MatRowDef,
     MatButton,
     MatIconModule,
-    MatFormField,
     MatFormFieldModule,
-    MatInput,
+    MatHeaderCellDef,
+    MatCellDef,
+    MatHeaderRowDef,
+    MatRowDef,
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.less'
@@ -74,10 +70,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 		this.dialog.open(CreateTaskComponent);
 	}
 
-  applyFilter(event: KeyboardEvent) {
-    const inputElement = event.target as HTMLInputElement;
-    if (inputElement) {
-      this.dataSource.filter = inputElement.value.trim().toLowerCase();
-    }
+  openFiltersDialog() {
+    this.dialog.open(FilterComponent);
   }
 }
