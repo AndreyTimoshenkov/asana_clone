@@ -10,7 +10,7 @@ import { MatAutocomplete, MatAutocompleteTrigger } from "@angular/material/autoc
 import { ASSIGNEES, ITask, ITaskForm, TPriority, TStatus } from "../../model/model";
 import { MatDialogRef } from "@angular/material/dialog";
 import { Store } from "@ngrx/store";
-import { addTask } from "../../state/task/task.actions";
+import { TaskActions } from "../../state/task/task.actions";
 
 @Component({
   selector: 'app-create-task',
@@ -63,7 +63,7 @@ export class CreateTaskComponent {
       assignee: formValues.assignee!,
     };
 
-    this.store.dispatch(addTask({ task: task }));
+    this.store.dispatch(TaskActions.addTask({ task: task }));
   }
 
   onSubmit() {

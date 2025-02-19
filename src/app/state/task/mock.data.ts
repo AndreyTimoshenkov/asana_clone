@@ -1,5 +1,7 @@
-{
-  "tasks": [
+import { TaskState } from "./task.model";
+
+export const INITIAL_STATE: TaskState = {
+  tasks: [
     {
       "title": "Design Homepage",
       "description": "Create wireframes and mockups for the homepage layout.",
@@ -57,4 +59,4 @@
       "assignee" : "Olivia Bennett"
     }
   ]
-}
+};

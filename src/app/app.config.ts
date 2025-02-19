@@ -2,7 +2,6 @@ import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { provideHttpClient } from "@angular/common/http";
 import { provideLuxonDateAdapter } from '@angular/material-luxon-adapter';
 import { Settings } from 'luxon';
 import { MAT_DATE_FORMATS } from "@angular/material/core";
@@ -29,7 +28,6 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideAnimationsAsync(),
-    provideHttpClient(),
     provideLuxonDateAdapter(),
     { provide: MAT_DATE_FORMATS, useValue: CUSTOM_DATE_FORMATS },
     provideStore({ tasks: taskReducer }),
