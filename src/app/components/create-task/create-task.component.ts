@@ -9,6 +9,8 @@ import { MatOption, MatSelect } from "@angular/material/select";
 import { MatAutocomplete, MatAutocompleteTrigger } from "@angular/material/autocomplete";
 import { ASSIGNEES, ITask, ITaskForm, TPriority, TStatus } from "../../model/model";
 import { MatDialogRef } from "@angular/material/dialog";
+import { Store } from "@ngrx/store";
+import { addTask } from "../../state/task/task.actions";
 
 @Component({
   selector: 'app-create-task',
@@ -45,9 +47,12 @@ export class CreateTaskComponent {
   @Output() taskCreated = new EventEmitter<ITask>();
   @Output() dialogToBeClosed = new EventEmitter<void>();
 
-  constructor(readonly dialogRef: MatDialogRef<CreateTaskComponent>) {}
+  constructor(
+    readonly dialogRef: MatDialogRef<CreateTaskComponent>,
+    private store: Store,
+  ) {}
 
-  onSubmit() {
+  createTask(): void {
     const formValues = this.newTaskForm.value;
     const task: ITask = {
       title: formValues.title!,
@@ -57,13 +62,13 @@ export class CreateTaskComponent {
       status: formValues.status!,
       assignee: formValues.assignee!,
     };
-    const taskData = { success: true, task: task };
-    this.dialogRef.close(taskData);
-    this.newTaskForm.reset();
+
+    this.store.dispatch(addTask({ task: task }));
   }
 
-  onCancel() {
-    const taskData = { success: false, task: null };
-    this.dialogRef.close(taskData);
+  onSubmit() {
+    this.createTask();
+    this.dialogRef.close();
+    this.newTaskForm.reset();
   }
 }

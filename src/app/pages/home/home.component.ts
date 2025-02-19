@@ -1,5 +1,4 @@
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
-import { MockApiService } from "../../services/mock-api.service";
+import { AfterViewInit, Component, DestroyRef, inject, OnInit, ViewChild } from '@angular/core';
 import {
   MatCell,
   MatCellDef,
@@ -9,7 +8,6 @@ import {
   MatHeaderRow, MatHeaderRowDef, MatRow, MatRowDef,
   MatTable, MatTableDataSource
 } from "@angular/material/table";
-import { ITask, ITaskCreation } from "../../model/model";
 import { MatSort, MatSortHeader } from "@angular/material/sort";
 import { MatButton } from "@angular/material/button";
 import { CreateTaskComponent } from '../../components/create-task/create-task.component';
@@ -17,6 +15,9 @@ import {MatDialog} from "@angular/material/dialog";
 import {MatIconModule} from "@angular/material/icon";
 import { MatFormField, MatFormFieldModule } from "@angular/material/form-field";
 import { MatInput } from "@angular/material/input";
+import { select, Store } from "@ngrx/store";
+import { ITask, TaskState } from '../../state/task/task.model';
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 @Component({
   selector: 'app-home',
@@ -37,50 +38,46 @@ import { MatInput } from "@angular/material/input";
     MatIconModule,
     MatFormField,
     MatFormFieldModule,
-    MatInput
+    MatInput,
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.less'
 })
-export class HomeComponent implements OnInit {
-  api = inject(MockApiService);
+export class HomeComponent implements OnInit, AfterViewInit {
   dataSource = new MatTableDataSource<ITask>();
-  tasks: ITask[] = [];
   displayedColumns: string[] = ['title', 'description', 'deadline', 'priority', 'status', 'assignee'];
+
+  private destroyRef = inject(DestroyRef);
 	private dialog = inject(MatDialog);
+  private store: Store<{ tasks: TaskState }> = inject(Store<{ tasks: TaskState }>);
+  tasks$ = this.store.pipe(
+    select(state => state.tasks.tasks),
+    takeUntilDestroyed(this.destroyRef),
+  );
 
   @ViewChild(MatSort) sort: MatSort | null = null;
   @ViewChild(CreateTaskComponent) createTaskComp: CreateTaskComponent | undefined;
 
   ngOnInit(): void {
-    this.api.getTasks().subscribe(tasks => {
-      if (tasks !== undefined) {
-        this.tasks = tasks;
-        this.dataSource = new MatTableDataSource<ITask>(this.tasks);
-      }
-
-      this.dataSource.sort = this.sort;
-    })
+    this.tasks$.subscribe(tasks => {
+      this.dataSource.data = tasks || [];
+    });
   }
 
-  addNewTask(task: ITask | null): void {
-    if (task === null) { return; }
-    this.tasks.push(task);
-    this.dataSource.data = [...this.tasks];
+  ngAfterViewInit(): void {
+    if (this.sort) {
+      this.dataSource.sort = this.sort;
+    }
   }
 
 	openCreateTaskDialog(): void {
-		const dialogRef = this.dialog.open(CreateTaskComponent);
-
-		dialogRef.afterClosed().subscribe((result: ITaskCreation) => {
-			if (result?.success) {
-        this.addNewTask(result.task);
-			}
-		});
+		this.dialog.open(CreateTaskComponent);
 	}
 
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+  applyFilter(event: KeyboardEvent) {
+    const inputElement = event.target as HTMLInputElement;
+    if (inputElement) {
+      this.dataSource.filter = inputElement.value.trim().toLowerCase();
+    }
   }
 }

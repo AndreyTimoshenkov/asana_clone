@@ -7,6 +7,7 @@ import { provideLuxonDateAdapter } from '@angular/material-luxon-adapter';
 import { Settings } from 'luxon';
 import { MAT_DATE_FORMATS } from "@angular/material/core";
 import { provideStore } from '@ngrx/store';
+import { taskReducer } from "./state/task/task.reducer";
 
 export const CUSTOM_DATE_FORMATS = {
   parse: {
@@ -31,7 +32,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(),
     provideLuxonDateAdapter(),
     { provide: MAT_DATE_FORMATS, useValue: CUSTOM_DATE_FORMATS },
-    provideStore()
+    provideStore({ tasks: taskReducer }),
 ]
 };
 

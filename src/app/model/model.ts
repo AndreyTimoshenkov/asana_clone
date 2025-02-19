@@ -31,8 +31,3 @@ export interface ITaskForm {
   status: FormControl<'open' | 'in progress' | 'completed' | 'postponed'>;
   assignee: FormControl<string>;
 }
-
-export interface ITaskCreation {
-  success: boolean;
-  task: ITask | null;
-}

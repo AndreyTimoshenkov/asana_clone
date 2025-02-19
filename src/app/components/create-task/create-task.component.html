@@ -1,5 +1,3 @@
-<!--<ng-content select='form'></ng-content>-->
-
 <form [formGroup]="newTaskForm">
   <mat-form-field>
     <mat-label>Title</mat-label>
@@ -48,7 +46,7 @@
   </mat-form-field>
 
   <div class="buttons">
-    <button mat-raised-button (click)="onCancel()">
+    <button mat-raised-button (click)="this.dialogRef.close()">
       <mat-icon>cancel</mat-icon>
       Cancel
     </button>
