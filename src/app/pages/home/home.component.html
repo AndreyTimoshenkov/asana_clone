@@ -12,7 +12,7 @@
 
 </div>
 
-<table mat-table matSort [dataSource]="dataSource">
+<table mat-table matSort [dataSource]="filteredTasks$">
   <ng-container matColumnDef="title">
     <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by number">
       Title

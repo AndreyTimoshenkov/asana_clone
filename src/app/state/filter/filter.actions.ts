@@ -4,7 +4,7 @@ import { TFilter } from "./filter.model";
 export const FilterActions = createActionGroup({
   source: '[Table]',
   events: {
-    setFilter: props<{ filterType: TFilter, value: string | null }>(),
+    setFilter: props<{ filterType: TFilter; value: string | Date | null }>(),
     clearFilter: props<{ filterType: TFilter }>(),
     clearAllFilters: emptyProps()
   }

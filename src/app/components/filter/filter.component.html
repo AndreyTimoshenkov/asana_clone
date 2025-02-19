@@ -1,12 +1,12 @@
 <h1 mat-dialog-title>Select Filters</h1>
   <div mat-dialog-content>
 
-  <form action="">
+  <form action="" [formGroup]="filterForm">
 
   <mat-form-field>
     <mat-label>Priority</mat-label>
-    <mat-select>
-      <mat-option value="null">All</mat-option>
+    <mat-select formControlName="priority">
+      <mat-option [value]="null">None</mat-option>
       <mat-option value="low">Low</mat-option>
       <mat-option value="medium">Medium</mat-option>
       <mat-option value="high">High</mat-option>
@@ -15,8 +15,8 @@
 
   <mat-form-field>
     <mat-label>Status</mat-label>
-    <mat-select>
-      <mat-option value="null">All</mat-option>
+    <mat-select formControlName="status">
+      <mat-option [value]="null">None</mat-option>
       <mat-option value="open">Open</mat-option>
       <mat-option value="in progress">In progress</mat-option>
       <mat-option value="completed">Completed</mat-option>
@@ -26,7 +26,7 @@
 
   <mat-form-field>
     <mat-label>Assignee</mat-label>
-    <input matInput [matAutocomplete]="auto">
+    <input matInput [matAutocomplete]="auto" formControlName="assignee">
     <mat-autocomplete #auto="matAutocomplete">
       @for (assignee of ASSIGNEES; track assignee) {
         <mat-option [value]="assignee">{{assignee}}</mat-option>
@@ -36,15 +36,14 @@
 
   <mat-form-field>
     <mat-label>Deadline</mat-label>
-    <input matInput [matDatepicker]="picker">
+    <input matInput [matDatepicker]="picker" formControlName="deadline">
     <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
     <mat-datepicker #picker></mat-datepicker>
   </mat-form-field>
-
   </form>
 
 </div>
 <div mat-dialog-actions>
-  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-button (click)="clearFilters()">Clear filters</button>
   <button mat-button (click)="onSave()">Save</button>
 </div>

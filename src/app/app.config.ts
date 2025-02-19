@@ -4,9 +4,10 @@ import { routes } from './app.routes';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideLuxonDateAdapter } from '@angular/material-luxon-adapter';
 import { Settings } from 'luxon';
-import { MAT_DATE_FORMATS } from "@angular/material/core";
+import { MAT_DATE_FORMATS, provideNativeDateAdapter } from "@angular/material/core";
 import { provideStore } from '@ngrx/store';
 import { taskReducer } from "./state/task/task.reducer";
+import { filterReducer } from "./state/filter/filter.reducer";
 
 export const CUSTOM_DATE_FORMATS = {
   parse: {
@@ -30,8 +31,9 @@ export const appConfig: ApplicationConfig = {
     provideAnimationsAsync(),
     provideLuxonDateAdapter(),
     { provide: MAT_DATE_FORMATS, useValue: CUSTOM_DATE_FORMATS },
-    provideStore({ tasks: taskReducer }),
-]
+    provideStore({ tasks: taskReducer, filters: filterReducer }),
+    provideNativeDateAdapter(),
+  ]
 };
 
 

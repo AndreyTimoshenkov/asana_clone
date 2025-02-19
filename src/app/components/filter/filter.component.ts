@@ -1,17 +1,20 @@
 import { Component } from '@angular/core';
 import { MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTitle } from "@angular/material/dialog";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatButton } from "@angular/material/button";
 import { Store } from "@ngrx/store";
-import { TFilter } from "../../state/filter/filter.model";
 import { FilterActions } from "../../state/filter/filter.actions";
 import { MatFormField, MatLabel, MatSuffix } from "@angular/material/form-field";
 import { MatOption } from "@angular/material/core";
 import { MatSelect } from "@angular/material/select";
-import { ASSIGNEES } from "../../model/model";
+import { ASSIGNEES, TPriorityFilter, TStatusFilter } from "../../model/model";
 import { MatAutocomplete, MatAutocompleteTrigger } from "@angular/material/autocomplete";
 import { MatInput } from "@angular/material/input";
-import { MatDatepicker, MatDatepickerInput, MatDatepickerToggle } from "@angular/material/datepicker";
+import {
+  MatDatepicker,
+  MatDatepickerInput, MatDatepickerModule,
+  MatDatepickerToggle,
+} from "@angular/material/datepicker";
 
 @Component({
   selector: 'app-filter',
@@ -32,41 +35,57 @@ import { MatDatepicker, MatDatepickerInput, MatDatepickerToggle } from "@angular
     MatDatepicker,
     MatDatepickerInput,
     MatDatepickerToggle,
-    MatSuffix
+    MatSuffix,
+    MatDatepickerModule,
+
   ],
   templateUrl: './filter.component.html',
   styleUrl: './filter.component.less'
 })
 export class FilterComponent {
-  selectedStatus: string | null = null;
-  selectedAssignee: string | null = null;
-  selectedDeadline: string | null = null;
-  selectedPriority: string | null = null;
+
+  filterForm = new FormGroup({
+    priority: new FormControl<TPriorityFilter>(null, { nonNullable: false }),
+    deadline: new FormControl<Date | null>(null),
+    status: new FormControl<TStatusFilter>(null, { nonNullable: false }),
+    assignee: new FormControl<string>(''),
+  });
 
   constructor(
     private dialogRef: MatDialogRef<FilterComponent>,
     private store: Store
   ) {}
 
-  dispatchFilterAction(filterType: TFilter, value: string | null) {
-    if (value !== null) {
-      this.store.dispatch(FilterActions.setFilter({ filterType, value }));
-    } else {
-      this.store.dispatch(FilterActions.clearFilter({ filterType }));
-    }
-  }
-
-  onCancel() {
-    this.dialogRef.close();
-  }
+  // dispatchFilterAction(filterType: TFilter, value: string | null) {
+  //   if (value !== null) {
+  //     this.store.dispatch(FilterActions.setFilter({ filterType, value }));
+  //   } else {
+  //     this.store.dispatch(FilterActions.clearFilter({ filterType }));
+  //   }
+  // }
 
   onSave() {
-    this.dispatchFilterAction('status', this.selectedStatus);
-    this.dispatchFilterAction('assignee', this.selectedAssignee);
-    this.dispatchFilterAction('deadline', this.selectedDeadline);
-    this.dispatchFilterAction('priority', this.selectedPriority);
+    const value = this.filterForm.value;
+
+    this.store.dispatch(
+      FilterActions.setFilter({ filterType: 'assignee', value: value.assignee! })
+    );
+    this.store.dispatch(
+      FilterActions.setFilter({ filterType: 'deadline', value: value.deadline! })
+    );
+    this.store.dispatch(
+      FilterActions.setFilter({ filterType: 'priority', value: value.priority! })
+    );
+    this.store.dispatch(
+      FilterActions.setFilter({ filterType: 'status', value: value.status! })
+    );
 
     this.dialogRef.close();
+  }
+
+  clearFilters() {
+    this.store.dispatch(FilterActions.clearAllFilters());
+    this.filterForm.reset();
   }
 
   protected readonly ASSIGNEES = ASSIGNEES;

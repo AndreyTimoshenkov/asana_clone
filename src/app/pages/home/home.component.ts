@@ -16,6 +16,9 @@ import { select, Store } from "@ngrx/store";
 import { ITask, TaskState } from '../../state/task/task.model';
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FilterComponent } from "../../components/filter/filter.component";
+import { FilterState } from "../../state/filter/filter.model";
+import { combineLatest, map, Observable } from "rxjs";
+import { selectAllFilters } from "../../state/filter/filter.selectors";
 
 @Component({
   selector: 'app-home',
@@ -45,14 +48,25 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   private destroyRef = inject(DestroyRef);
 	private dialog = inject(MatDialog);
-  private store: Store<{ tasks: TaskState }> = inject(Store<{ tasks: TaskState }>);
+  private store: Store<{ tasks: TaskState }> = inject(Store<{ tasks: TaskState, filters: FilterState }>);
   tasks$ = this.store.pipe(
     select(state => state.tasks.tasks),
     takeUntilDestroyed(this.destroyRef),
   );
 
+  filteredTasks$: Observable<ITask[]>;
+
   @ViewChild(MatSort) sort: MatSort | null = null;
   @ViewChild(CreateTaskComponent) createTaskComp: CreateTaskComponent | undefined;
+
+  constructor() {
+    this.filteredTasks$ = combineLatest([
+      this.tasks$,
+      this.store.pipe(select(selectAllFilters))
+    ]).pipe(
+      map(([tasks, filters]) => this.filterTasks(tasks, filters))
+    );
+  }
 
   ngOnInit(): void {
     this.tasks$.subscribe(tasks => {
@@ -72,5 +86,29 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   openFiltersDialog() {
     this.dialog.open(FilterComponent);
+  }
+
+  private filterTasks(tasks: ITask[], filters: FilterState): ITask[] {
+    return tasks.filter(task => {
+      let match = true;
+
+      if (filters.assignee && task.assignee !== filters.assignee) {
+        match = false;
+      }
+
+      if (filters.deadline && task.deadline !== filters.deadline) {
+        match = false;
+      }
+
+      if (filters.priority && task.priority !== filters.priority) {
+        match = false;
+      }
+
+      if (filters.status && task.status !== filters.status) {
+        match = false;
+      }
+
+      return match;
+    });
   }
 }

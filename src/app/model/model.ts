@@ -13,6 +13,9 @@ export type TPriority = "low" | "medium" | "high";
 
 export type TStatus = "open" | "in progress" | "completed" | "postponed";
 
+export type TPriorityFilter = TPriority | null;
+export type TStatusFilter = TStatus | null;
+
 export const ASSIGNEES = [
   'Ava Mitchell',
   'Daniel Hayes',

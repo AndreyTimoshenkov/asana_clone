@@ -1,16 +1,16 @@
 import { createReducer, on } from '@ngrx/store';
-import { initialFilterState } from "./mock-filter.data";
 import { FilterActions } from "./filter.actions";
+import { initialFilterState } from "./filter.model";
 
 export const filterReducer = createReducer(
   initialFilterState,
   on(FilterActions.setFilter, (state, { filterType, value }) => ({
     ...state,
-    [filterType]: value
+    [filterType]: value,
   })),
   on(FilterActions.clearFilter, (state, { filterType }) => ({
     ...state,
-    [filterType]: null
+    [filterType]: null,
   })),
   on(FilterActions.clearAllFilters, () => initialFilterState)
 );
