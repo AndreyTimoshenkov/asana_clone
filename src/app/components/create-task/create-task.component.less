@@ -1,8 +1,12 @@
-@import 'src/colors.less';
-
 :host {
-  background: @asana-bcg;
-  color: @asana-main-text;
-  min-height: 200px;
-  margin: 20px;
+
+  form {
+    display: flex;
+    flex-direction: column;
+
+    .buttons {
+      display: flex;
+      gap: 1rem;
+    }
+  }
 }

@@ -9,12 +9,14 @@ import {
   MatHeaderRow, MatHeaderRowDef, MatRow, MatRowDef,
   MatTable, MatTableDataSource
 } from "@angular/material/table";
-import { ITask } from "../../model/model";
+import { ITask, ITaskCreation } from "../../model/model";
 import { MatSort, MatSortHeader } from "@angular/material/sort";
 import { MatButton } from "@angular/material/button";
 import { CreateTaskComponent } from '../../components/create-task/create-task.component';
 import {MatDialog} from "@angular/material/dialog";
 import {MatIconModule} from "@angular/material/icon";
+import { MatFormField, MatFormFieldModule } from "@angular/material/form-field";
+import { MatInput } from "@angular/material/input";
 
 @Component({
   selector: 'app-home',
@@ -32,7 +34,10 @@ import {MatIconModule} from "@angular/material/icon";
     MatRow,
     MatRowDef,
     MatButton,
-		MatIconModule
+    MatIconModule,
+    MatFormField,
+    MatFormFieldModule,
+    MatInput
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.less'
@@ -45,6 +50,7 @@ export class HomeComponent implements OnInit {
 	private dialog = inject(MatDialog);
 
   @ViewChild(MatSort) sort: MatSort | null = null;
+  @ViewChild(CreateTaskComponent) createTaskComp: CreateTaskComponent | undefined;
 
   ngOnInit(): void {
     this.api.getTasks().subscribe(tasks => {
@@ -57,21 +63,24 @@ export class HomeComponent implements OnInit {
     })
   }
 
-  addNewTask(task: ITask): void {
+  addNewTask(task: ITask | null): void {
+    if (task === null) { return; }
     this.tasks.push(task);
     this.dataSource.data = [...this.tasks];
   }
 
 	openCreateTaskDialog(): void {
-		const dialogRef = this.dialog.open(CreateTaskComponent, {
-			width: '400px',
-			data: { title: 'New Task' }
-		});
+		const dialogRef = this.dialog.open(CreateTaskComponent);
 
-		dialogRef.afterClosed().subscribe(result => {
-			if (result) {
-				console.log('New Task Created:', result);
+		dialogRef.afterClosed().subscribe((result: ITaskCreation) => {
+			if (result?.success) {
+        this.addNewTask(result.task);
 			}
 		});
 	}
+
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
 }

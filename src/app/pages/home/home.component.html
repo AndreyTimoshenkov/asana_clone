@@ -1,8 +1,15 @@
 <div class="controls">
-    <button mat-raised-button (click)="openCreateTaskDialog()">
-        <mat-icon>add</mat-icon>
-        Create new task
-    </button>
+
+  <mat-form-field>
+    <mat-label>Filter</mat-label>
+    <input matInput (keyup)="applyFilter($event)" placeholder="Start typing to filter the tasks">
+  </mat-form-field>
+
+  <button mat-raised-button (click)="openCreateTaskDialog()">
+    <mat-icon>add</mat-icon>
+    Create new task
+  </button>
+
 </div>
 
 <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
