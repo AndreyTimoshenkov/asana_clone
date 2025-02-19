@@ -19,6 +19,7 @@ import { FilterComponent } from "../../components/filter/filter.component";
 import { FilterState } from "../../state/filter/filter.model";
 import { combineLatest, map, Observable } from "rxjs";
 import { selectAllFilters } from "../../state/filter/filter.selectors";
+import { DateTime } from "luxon";
 
 @Component({
   selector: 'app-home',
@@ -96,8 +97,13 @@ export class HomeComponent implements OnInit, AfterViewInit {
         match = false;
       }
 
-      if (filters.deadline && task.deadline !== filters.deadline) {
-        match = false;
+      if (filters.deadline) {
+        const taskDeadline = DateTime.fromISO(task.deadline as string, { zone: 'Europe/Moscow' });
+        const filterDeadline = DateTime.fromISO(filters.deadline.toString(), { zone: 'Europe/Moscow' });
+
+        if (!taskDeadline.isValid || !filterDeadline.isValid || !taskDeadline.hasSame(filterDeadline, 'day')) {
+          return false;
+        }
       }
 
       if (filters.priority && task.priority !== filters.priority) {

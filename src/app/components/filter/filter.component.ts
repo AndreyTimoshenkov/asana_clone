@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, DestroyRef, OnInit } from '@angular/core';
 import { MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTitle } from "@angular/material/dialog";
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatButton } from "@angular/material/button";
-import { Store } from "@ngrx/store";
+import { select, Store } from "@ngrx/store";
 import { FilterActions } from "../../state/filter/filter.actions";
 import { MatFormField, MatLabel, MatSuffix } from "@angular/material/form-field";
 import { MatOption } from "@angular/material/core";
@@ -15,6 +15,8 @@ import {
   MatDatepickerInput, MatDatepickerModule,
   MatDatepickerToggle,
 } from "@angular/material/datepicker";
+import { selectAllFilters } from "../../state/filter/filter.selectors";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 @Component({
   selector: 'app-filter',
@@ -42,7 +44,7 @@ import {
   templateUrl: './filter.component.html',
   styleUrl: './filter.component.less'
 })
-export class FilterComponent {
+export class FilterComponent implements OnInit {
 
   filterForm = new FormGroup({
     priority: new FormControl<TPriorityFilter>(null, { nonNullable: false }),
@@ -53,16 +55,18 @@ export class FilterComponent {
 
   constructor(
     private dialogRef: MatDialogRef<FilterComponent>,
-    private store: Store
+    private store: Store,
+    private destroyRef: DestroyRef,
   ) {}
 
-  // dispatchFilterAction(filterType: TFilter, value: string | null) {
-  //   if (value !== null) {
-  //     this.store.dispatch(FilterActions.setFilter({ filterType, value }));
-  //   } else {
-  //     this.store.dispatch(FilterActions.clearFilter({ filterType }));
-  //   }
-  // }
+  ngOnInit() {
+    this.store.pipe(
+      select(selectAllFilters),
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe(filters => {
+      this.filterForm.patchValue(filters, { emitEvent: false });
+    });
+  }
 
   onSave() {
     const value = this.filterForm.value;

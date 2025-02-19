@@ -1,47 +1,44 @@
 <h1 mat-dialog-title>Select Filters</h1>
   <div mat-dialog-content>
+  <form [formGroup]="filterForm">
+    <mat-form-field>
+      <mat-label>Priority</mat-label>
+      <mat-select formControlName="priority">
+        <mat-option [value]="null">None</mat-option>
+        <mat-option value="low">Low</mat-option>
+        <mat-option value="medium">Medium</mat-option>
+        <mat-option value="high">High</mat-option>
+      </mat-select>
+    </mat-form-field>
 
-  <form action="" [formGroup]="filterForm">
+    <mat-form-field>
+      <mat-label>Status</mat-label>
+      <mat-select formControlName="status">
+        <mat-option [value]="null">None</mat-option>
+        <mat-option value="open">Open</mat-option>
+        <mat-option value="in progress">In progress</mat-option>
+        <mat-option value="completed">Completed</mat-option>
+        <mat-option value="postponed">Postponed</mat-option>
+      </mat-select>
+    </mat-form-field>
 
-  <mat-form-field>
-    <mat-label>Priority</mat-label>
-    <mat-select formControlName="priority">
-      <mat-option [value]="null">None</mat-option>
-      <mat-option value="low">Low</mat-option>
-      <mat-option value="medium">Medium</mat-option>
-      <mat-option value="high">High</mat-option>
-    </mat-select>
-  </mat-form-field>
+    <mat-form-field>
+      <mat-label>Assignee</mat-label>
+      <input matInput [matAutocomplete]="auto" formControlName="assignee">
+      <mat-autocomplete #auto="matAutocomplete">
+        @for (assignee of ASSIGNEES; track assignee) {
+          <mat-option [value]="assignee">{{assignee}}</mat-option>
+        }
+      </mat-autocomplete>
+    </mat-form-field>
 
-  <mat-form-field>
-    <mat-label>Status</mat-label>
-    <mat-select formControlName="status">
-      <mat-option [value]="null">None</mat-option>
-      <mat-option value="open">Open</mat-option>
-      <mat-option value="in progress">In progress</mat-option>
-      <mat-option value="completed">Completed</mat-option>
-      <mat-option value="postponed">Postponed</mat-option>
-    </mat-select>
-  </mat-form-field>
-
-  <mat-form-field>
-    <mat-label>Assignee</mat-label>
-    <input matInput [matAutocomplete]="auto" formControlName="assignee">
-    <mat-autocomplete #auto="matAutocomplete">
-      @for (assignee of ASSIGNEES; track assignee) {
-        <mat-option [value]="assignee">{{assignee}}</mat-option>
-      }
-    </mat-autocomplete>
-  </mat-form-field>
-
-  <mat-form-field>
-    <mat-label>Deadline</mat-label>
-    <input matInput [matDatepicker]="picker" formControlName="deadline">
-    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-    <mat-datepicker #picker></mat-datepicker>
-  </mat-form-field>
+    <mat-form-field>
+      <mat-label>Deadline</mat-label>
+      <input matInput [matDatepicker]="picker" formControlName="deadline">
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
   </form>
-
 </div>
 <div mat-dialog-actions>
   <button mat-button (click)="clearFilters()">Clear filters</button>
