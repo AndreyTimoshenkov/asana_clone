@@ -1,4 +1,4 @@
-import { Component, DestroyRef, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTitle } from "@angular/material/dialog";
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatButton } from "@angular/material/button";
@@ -7,7 +7,7 @@ import { FilterActions } from "../../state/filter/filter.actions";
 import { MatFormField, MatLabel, MatSuffix } from "@angular/material/form-field";
 import { MatOption } from "@angular/material/core";
 import { MatSelect } from "@angular/material/select";
-import { ASSIGNEES, TPriorityFilter, TStatusFilter } from "../../model/model";
+import { TPriorityFilter, TStatusFilter } from "../../model/model";
 import { MatAutocomplete, MatAutocompleteTrigger } from "@angular/material/autocomplete";
 import { MatInput } from "@angular/material/input";
 import {
@@ -16,7 +16,9 @@ import {
   MatDatepickerToggle,
 } from "@angular/material/datepicker";
 import { selectAllFilters } from "../../state/filter/filter.selectors";
-import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { takeUntilDestroyed, toSignal } from "@angular/core/rxjs-interop";
+import { selectAllAssignees } from "../../state/assignees/assignee.selector";
+import { map, startWith } from "rxjs";
 
 @Component({
   selector: 'app-filter',
@@ -39,12 +41,17 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
     MatDatepickerToggle,
     MatSuffix,
     MatDatepickerModule,
-
   ],
   templateUrl: './filter.component.html',
   styleUrl: './filter.component.less'
 })
 export class FilterComponent implements OnInit {
+
+  private dialogRef = inject(MatDialogRef<FilterComponent>);
+  private store =inject(Store);
+  private destroyRef = inject(DestroyRef);
+
+  protected assignees$$ = toSignal(this.store.pipe(select(selectAllAssignees)));
 
   filterForm = new FormGroup({
     priority: new FormControl<TPriorityFilter>(null, { nonNullable: false }),
@@ -53,11 +60,10 @@ export class FilterComponent implements OnInit {
     assignee: new FormControl<string>(''),
   });
 
-  constructor(
-    private dialogRef: MatDialogRef<FilterComponent>,
-    private store: Store,
-    private destroyRef: DestroyRef,
-  ) {}
+  protected filteredOptions$$ = toSignal(this.filterForm.get('assignee')!.valueChanges.pipe(
+    startWith(''),
+    map((value) => this.filter(value || ''))
+  ));
 
   ngOnInit() {
     this.store.pipe(
@@ -66,6 +72,15 @@ export class FilterComponent implements OnInit {
     ).subscribe(filters => {
       this.filterForm.patchValue(filters, { emitEvent: false });
     });
+  }
+
+  private filter(value: string): string[]  {
+    if (!this.assignees$$()) { return  []; }
+
+    const filterValue = value.toLowerCase();
+    return this.assignees$$()!.filter((option) =>
+      option.toLowerCase().includes(filterValue)
+    );
   }
 
   onSave() {
@@ -91,6 +106,4 @@ export class FilterComponent implements OnInit {
     this.store.dispatch(FilterActions.clearAllFilters());
     this.filterForm.reset();
   }
-
-  protected readonly ASSIGNEES = ASSIGNEES;
 }

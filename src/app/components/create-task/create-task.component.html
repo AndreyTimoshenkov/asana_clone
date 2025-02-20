@@ -39,7 +39,7 @@
     <mat-label>Assignee</mat-label>
     <input matInput [matAutocomplete]="auto" formControlName="assignee">
     <mat-autocomplete #auto="matAutocomplete">
-      @for (assignee of ASSIGNEES; track assignee) {
+      @for (assignee of filteredOptions$$(); track assignee) {
         <mat-option [value]="assignee">{{assignee}}</mat-option>
       }
     </mat-autocomplete>

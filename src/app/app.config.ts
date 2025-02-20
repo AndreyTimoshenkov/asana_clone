@@ -8,6 +8,7 @@ import { MAT_DATE_FORMATS } from "@angular/material/core";
 import { provideStore } from '@ngrx/store';
 import { taskReducer } from "./state/task/task.reducer";
 import { filterReducer } from "./state/filter/filter.reducer";
+import { assigneeReducer } from "./state/assignees/assignee.reducer";
 
 export const CUSTOM_DATE_FORMATS = {
   parse: {
@@ -31,6 +32,6 @@ export const appConfig: ApplicationConfig = {
     provideAnimationsAsync(),
     provideLuxonDateAdapter(),
     { provide: MAT_DATE_FORMATS, useValue: CUSTOM_DATE_FORMATS },
-    provideStore({ tasks: taskReducer, filters: filterReducer }),
+    provideStore({ tasks: taskReducer, filters: filterReducer, assignees: assigneeReducer  }),
   ]
 };

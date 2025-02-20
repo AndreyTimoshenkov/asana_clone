@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatFormField, MatFormFieldModule } from "@angular/material/form-field";
 import { MatInput } from "@angular/material/input";
@@ -7,10 +7,14 @@ import { MatIcon } from "@angular/material/icon";
 import { MatDatepicker, MatDatepickerInput, MatDatepickerToggle } from "@angular/material/datepicker";
 import { MatOption, MatSelect } from "@angular/material/select";
 import { MatAutocomplete, MatAutocompleteTrigger } from "@angular/material/autocomplete";
-import { ASSIGNEES, ITask, ITaskForm, TPriority, TStatus } from "../../model/model";
+import { ITask, ITaskForm, TPriority, TStatus } from "../../model/model";
 import { MatDialogRef } from "@angular/material/dialog";
-import { Store } from "@ngrx/store";
+import { select, Store } from "@ngrx/store";
 import { TaskActions } from "../../state/task/task.actions";
+import { selectAllAssignees } from "../../state/assignees/assignee.selector";
+import { toSignal } from "@angular/core/rxjs-interop";
+import { addAssignee } from "../../state/assignees/assignee.actions";
+import { map, startWith } from "rxjs";
 
 @Component({
   selector: 'app-create-task',
@@ -27,7 +31,7 @@ import { TaskActions } from "../../state/task/task.actions";
     MatSelect,
     MatOption,
     MatAutocomplete,
-    MatAutocompleteTrigger
+    MatAutocompleteTrigger,
   ],
   templateUrl: './create-task.component.html',
   styleUrl: './create-task.component.less'
@@ -43,14 +47,24 @@ export class CreateTaskComponent {
     assignee: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
   });
 
-  protected readonly ASSIGNEES = ASSIGNEES;
-  @Output() taskCreated = new EventEmitter<ITask>();
-  @Output() dialogToBeClosed = new EventEmitter<void>();
+  readonly dialogRef = inject(MatDialogRef<CreateTaskComponent>);
+  private store = inject(Store);
 
-  constructor(
-    readonly dialogRef: MatDialogRef<CreateTaskComponent>,
-    private store: Store,
-  ) {}
+  private assignees$$ = toSignal(this.store.pipe(select(selectAllAssignees)));
+
+  protected filteredOptions$$ = toSignal(this.newTaskForm.get('assignee')!.valueChanges.pipe(
+    startWith(''),
+    map((value) => this.filter(value || ''))
+  ));
+
+  private filter(value: string): string[]  {
+    if (!this.assignees$$()) { return  []; }
+
+    const filterValue = value.toLowerCase();
+    return this.assignees$$()!.filter((option) =>
+      option.toLowerCase().includes(filterValue)
+    );
+  }
 
   createTask(): void {
     const formValues = this.newTaskForm.value;
@@ -65,11 +79,19 @@ export class CreateTaskComponent {
     };
 
     this.store.dispatch(TaskActions.addTask({ task }));
+
+    if (this.isNewAssignee(formValues.assignee!)) {
+      this.store.dispatch(addAssignee({ assignee: formValues.assignee as string }));
+    }
   }
 
   onSubmit() {
     this.createTask();
     this.dialogRef.close();
     this.newTaskForm.reset();
+  }
+
+  isNewAssignee(assignee: string): boolean {
+    return !this.assignees$$()?.includes(assignee);
   }
 }
