@@ -12,7 +12,7 @@ RUN npm run build -- --configuration production
 
 FROM nginx:alpine
 
-COPY --from=build /app/dist/mini-asana /usr/share/nginx/html
+COPY --from=build /app/dist/mini-asana/browser /usr/share/nginx/html
 
 EXPOSE 80
 
