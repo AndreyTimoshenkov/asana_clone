@@ -11,7 +11,6 @@ import { ASSIGNEES, ITask, ITaskForm, TPriority, TStatus } from "../../model/mod
 import { MatDialogRef } from "@angular/material/dialog";
 import { Store } from "@ngrx/store";
 import { TaskActions } from "../../state/task/task.actions";
-import { DateTime } from "luxon";
 
 @Component({
   selector: 'app-create-task',
@@ -35,10 +34,10 @@ import { DateTime } from "luxon";
 })
 export class CreateTaskComponent {
 
-  newTaskForm = new FormGroup<ITaskForm>({
+  newTaskForm = new FormGroup<ITaskForm>(<ITaskForm>{
     title: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
     description: new FormControl('', { nonNullable: true }),
-    deadline: new FormControl<Date | null>(null, { validators: [Validators.required] }),
+    deadline: new FormControl<Date | string | null>(null, { validators: [Validators.required] }),
     priority: new FormControl<TPriority>('medium', { nonNullable: true, validators: [Validators.required] }),
     status: new FormControl<TStatus>('open', { nonNullable: true, validators: [Validators.required] }),
     assignee: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
@@ -56,13 +55,10 @@ export class CreateTaskComponent {
   createTask(): void {
     const formValues = this.newTaskForm.value;
 
-    const deadlineDateTime = DateTime.fromJSDate(formValues.deadline as Date, { zone: 'Europe/Moscow' });
-    const formattedDeadline = deadlineDateTime.toISODate() as string;
-
     const task: ITask = {
       title: formValues.title!,
       description: formValues.description || undefined,
-      deadline: formattedDeadline,
+      deadline: formValues.deadline!.toString().slice(0, 10),
       priority: formValues.priority!,
       status: formValues.status!,
       assignee: formValues.assignee!,

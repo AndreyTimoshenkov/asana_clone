@@ -50,7 +50,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
   private destroyRef = inject(DestroyRef);
 	private dialog = inject(MatDialog);
   private store: Store<{ tasks: TaskState }> = inject(Store<{ tasks: TaskState, filters: FilterState }>);
-  tasks$ = this.store.pipe(
+
+  private tasks$ = this.store.pipe(
     select(state => state.tasks.tasks),
     takeUntilDestroyed(this.destroyRef),
   );
@@ -70,7 +71,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.tasks$.subscribe(tasks => {
+    this.filteredTasks$.subscribe(tasks => {
       this.dataSource.data = tasks || [];
     });
   }
@@ -98,10 +99,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
       }
 
       if (filters.deadline) {
-        const taskDeadline = DateTime.fromISO(task.deadline as string, { zone: 'Europe/Moscow' });
-        const filterDeadline = DateTime.fromISO(filters.deadline.toString(), { zone: 'Europe/Moscow' });
+        const filterDeadline = DateTime.fromISO(filters.deadline.toString()).toISODate();
 
-        if (!taskDeadline.isValid || !filterDeadline.isValid || !taskDeadline.hasSame(filterDeadline, 'day')) {
+        if (task.deadline !== filterDeadline) {
           return false;
         }
       }
